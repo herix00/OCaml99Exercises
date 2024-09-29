@@ -108,14 +108,13 @@ let coprime n1 n2 = failwith "todo w/ gcd"
 
 (* Intermediate *)
 
-(* changed type definition so that it wouldn't interfere with future rle usage *)
-type 'a node = OneNode of 'a | ManyNode of 'a node list
+type 'a node = One of 'a | Many of 'a node list
 
 let flatten node =
   let rec aux acc = function
     | [] -> acc
-    | OneNode x :: xs -> aux (x :: acc) xs
-    | ManyNode x :: xs -> aux (aux acc x) xs
+    | One x :: xs -> aux (x :: acc) xs
+    | Many x :: xs -> aux (aux acc x) xs
   in
   List.rev (aux [] node)
 
@@ -151,6 +150,9 @@ let pack list =
         else aux ((x1 :: current) :: acc) [] t
   in
   List.rev (aux [] [] list)
+
+(* didn't recognize from above for some reason *)
+type 'a rle = One of 'a | Many of int * 'a
 
 let encode_direct list =
   let rle count value =
