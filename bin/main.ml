@@ -98,12 +98,8 @@ let range fst snd =
    - : int list = [20; 28; 45; 16; 24; 38]
 *)
 
-let lotto_select n set =
-  failwith "TODO: later. Requires random selection algorithm"
-
-let permutation list =
-  failwith "TODO: later. Requires random selection algorithm"
-
+let lotto_select n set = failwith "TODO: later. w/ selection algorithm"
+let permutation list = failwith "TODO: later. w/ selection algorithm"
 let coprime n1 n2 = failwith "todo w/ gcd"
 
 (* Intermediate *)
@@ -220,7 +216,7 @@ let drop_first_i i list =
   in
   aux i list
 
-(* This implementation is assuming i <= k *)
+(* assuming i <= k *)
 let slice list i k =
   let count = k - i + 1 in
   let rec aux acc count = function
@@ -229,3 +225,52 @@ let slice list i k =
         if count = i then aux acc count [] else aux (x :: acc) (count - 1) xs
   in
   aux [] (count + i) (drop_first_i i list)
+
+(* official solution *)
+let rec fold_until f acc n = function
+  | [] -> (acc, [])
+  | h :: t as l -> if n = 0 then (acc, l) else fold_until f (f acc h) (n - 1) t
+
+let slice list i k =
+  let _, list = fold_until (fun _ _ -> []) [] i list in
+  let taken, _ = fold_until (fun acc h -> h :: acc) [] (k - i + 1) list in
+  List.rev taken
+
+(* using previous functions and List logic *)
+let rotate_with_drop list n =
+  let list' = drop_first_i n list in
+  let dropped = drop_first_i (List.length list - n) (List.rev list) in
+  List.append list' (List.rev dropped)
+
+(* "manual" implementation *)
+let rotate list n = failwith "TODO later"
+
+(* unrelated to what I'm learning, will take a look later *)
+let rand_select list n =
+  let rand = Random.init (Random.int Int.max_int) in
+  let rec aux acc n = function [] -> acc | x :: xs -> failwith "todo" in
+  aux [] n list
+
+(* wrong implementation but put my heart and soul into it, literally *)
+let extract k list =
+  let rec aux acc k' = function
+    | [] -> [ List.rev acc ]
+    | [ _ ] -> aux acc k' []
+    | x :: xs ->
+        let with_x = aux (x :: acc) (k' - 1) xs in
+        let without_x = aux acc k' xs in
+        with_x @ without_x
+  in
+  aux [] k list
+
+let extract k list =
+  let rec aux acc k list =
+    match (k, list) with
+    | 0, _ -> [ List.rev acc ]
+    | _, [] -> []
+    | k, x :: xs ->
+        let with_x = aux (x :: acc) (k - 1) xs in
+        let without_x = aux acc k xs in
+        with_x @ without_x
+  in
+  aux [] k list
