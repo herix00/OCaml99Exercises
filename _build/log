@@ -1,0 +1,6 @@
+# dune init project OCaml99Exercises
+# OCAMLPARAM: unset
+# Shared cache: disabled
+# Shared cache location: /home/doga/.cache/dune/db
+# Workspace root: /home/doga/Programming/FPV/Practice/OCaml99Exercises
+# Auto-detected concurrency: 12
