@@ -274,3 +274,5 @@ let extract k list =
         with_x @ without_x
   in
   aux [] k list
+
+let group (list : 'a list) (group_num : int list) = failwith "todo"
